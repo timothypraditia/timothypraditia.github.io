@@ -1,0 +1,225 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Finite Volume Neural Network</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Timothy Praditia</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/timothypraditia" target="_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+										<li><a href="https://scholar.google.com/citations?user=kIKsjt8AAAAJ&hl=en" target="_blank" class="icon ai ai-google-scholar-square"><span class="label">Google Scholar</span></a></li>
+										<li><a href="https://www.linkedin.com/in/timothypraditia/" target="_blank" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://www.instagram.com/timothypraditia/?hl=en" target="_blank" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="https://twitter.com/timothypraditia" target="_blank" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="https://www.facebook.com/timothypraditia" target="_blank" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="tel:+4917686418746" class="icon solid style2 fa fa-phone"><span class="label">Phone</span></a></li>
+										<li><a href="mailto: timothypraditia89@gmail.com" class="icon solid style2 fa fa-envelope"><span class="label">Email</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Finite Volume Neural Network</h1>
+									</header>
+
+									<center>
+										<span class="image"><img src="images/finn.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<h2 style="padding-top: 2em">The motivation</h2>
+									<p>The picture above shows a scientist (strangely resembling Sheldon Cooper) with a robot assistant, working together to discover a useful pattern from an experiment that they just conducted.
+										This picture is an analogy of a hybrid modeling framework, where physical knowledge (originating from the scientist's expertise) is combined with the capability to learn patterns from data (represented by the robot and its computing capability).
+										This hybrid model, also known as the physics-informed machine learning model, has the potential to develop into a very powerful model.
+										Unfortunately, the existing models are either too physically-rigid so that its learning ability is restricted, or too flexible so that its predictions are physically inconsistent and implausible.
+										Additionally, they are mostly trained on synthetically-generated datasets, and rarely on real world data. </p>
+									
+									<h2>Enter the Finite Volume Neural Network (FINN)!</h2>
+									<p>In this project, we introduce the Finite Volume Neural Network (FINN) to solve and learn unknown parts of advection-diffusion equations.
+										As its name suggests, FINN adopts the structure of the Finite Volume Method (FVM), which is one of the most famous numerical methods for solving Partial Differential Equations (PDEs).
+										Individual elements used in the FVM are replaced with learnable neural network modules (see the sketch below).
+										This way, the model structure itself regularizes the model training, and we are able to learn unknown parts of the equations explicitly because it mimics the general form of the equation.
+										The other nice thing about FINN is that it can handle different types of numerical boundary conditions, unlike models with convolutional structure.</p>
+
+									<center>
+										<span class="image"><img src="images/finn-sketch.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">How does FINN compare to other models?</h2>
+									
+									<center>
+										<span class="image"><img src="images/finn-mse.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<p style="padding-top: 2em;">To demonstrate FINN's performance, we trained FINN and other models on synthetically generated datasets.
+										As test datasets, we defined the in-distribution (<i>in-dis-test</i>) datasets as the extrapolated train datasets, and the out-of-distribution datasets (<i>out-dis-test</i>) that are generated with different initial or boundary conditions.
+										The plot above shows the prediction error comparison of FINN with various deep learning models.
+										The important point to emphasize is that FINN has favorable prediction consistency, even on <i>out-dis-test</i> datasets.
+										As opposed to FINN, the other models have comparable errors during training (except for TCN and ConvLSTM), but their performance deteriorates significantly on <i>in-dis-test</i>, and even worse on <i>out-dis-test</i> data.
+										A visualization of the <i>out-dis-test</i> predictions on the Fitzhugh-Nagumo diffusion-reaction equation is shown in the plot below. Qualitatively, FINN's prediction also resembles the data the most, whereas the other model predictions are quite erratic.</p>
+
+									<center>
+										<span class="image"><img src="images/finn-fhn.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">What about real world data?</h2>
+
+									<p>Yes, I argued earlier that other models have rarely been tested on real world data.
+										So what happens then when FINN is trained with real and noisy datasets?
+										As a demonstration, we employed laboratory measurement data of a groundwater contaminant diffusion through soil.
+										Due to the limitations of the measuring equipment and the experimental design, the measured data are sparse and noisy.
+										For training, we only used <b>55 data points</b> that originated from a single core sample (core #2, top left plot in the figure below)!
+										As expected, FINN was still able to learn the unknown closure function (the retardation factor in this particular application, bottom right plot in the figure below).
+										This learned closure function was then used to predict the diffusion processes in other core samples (core #1 and #2B).
+										One of these samples (#2B) has a significantly longer size, and therefore, has to be modelled with a different numerical boundary condition type.
+										Additionally, because FINN is relatively scalable, we were able to implement the Markov Chain Monte Carlo (MCMC) algorithm to quantify the model and prediction uncertainty.
+										In the plot below, we show ensembles of FINN's prediction.
+										The average prediction even outperforms the calibrated physical model!</p>
+									
+									<center>
+										<span class="image"><img src="images/finn-experiment.jpg" alt="" style="width:50%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">Boundary condition inference</h2>
+
+									<p>You might have noticed that I already mentioned boundary condition several times in this article.
+										This is simply because boundary condition is extremely important in solving PDEs.
+										Without a well-defined boundary condition, unique solutions to PDEs do not exist.
+										Not convinced yet? Think about a weather forecasting task.
+										Numerical weather predictors are usually applied only on a designated location (e.g. a country, a city, or even a smaller area).
+										However, weather from outside of this observed region also influences the processes inside the modeled area.
+										This influence should be encoded as the boundary conditions of the modeled domain, in order to have a reliable weather prediction.
+										This encoding process is often not very straightforward.
+										Therefore, we also experimented on infering a yet unknown boundary condition value with FINN.
+										Compared to the other models, FINN was again able to accurately infer the boundary condition values, resulting in higher prediction accuracy (see the plot below).</p>
+									
+									<center>
+										<span class="image"><img src="images/finn-bc.jpg" alt="" style="width:75%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">What is missing?</h2>
+
+									<p>So far, FINN has been implemented only on regular grids and homogeneous systems.
+										It will be interesting to modify the implementation to facilitate applications to irregular grids and heterogeneous systems, so that it can be implemented on a larger scale (for example field scale instead of just laboratory scale experiment).
+										</p>
+
+									<h2 style="padding-top: 2em;">Further reading</h2>
+
+									<b>Blog post:</b>
+									<ul>
+										<a href="https://www.machinelearningforscience.de/en/fusing-physical-knowledge-with-neural-networks-flexibility/">Fusing Physical Knowledge with Neural Networks’ Flexibility</a>
+									</ul>
+
+									<b>Related papers:</b>
+									<ul>
+										<a href="https://simdl.github.io/files/33.pdf">Finite Volume Neural Network: Modeling Subsurface Contaminant Transport</a></br>
+										<a href="https://proceedings.mlr.press/v162/karlbauer22a/karlbauer22a.pdf">Composing Partial Differential Equations with Physics-Aware Neural Networks</a></br>
+										<a href="file:///C:/Users/timot/Documents/Doctoral/Research/SmartANN/Github/timothypraditia.github.io/papers/icann2022.pdf">Inferring Boundary Conditions in Finite Volume Neural Networks</a></br>
+										<a href="https://www.essoar.org/pdfjs/10.1002/essoar.10511934.1">Learning Groundwater Contaminant Diffusion-Sorption Processes with a Finite Volume Neural Network</a>
+									</ul>
+
+									<b>Related code:</b>
+									<ul>
+										<a href="https://github.com/CognitiveModeling/FINN-Research">FINN code repository</a></br>
+									</ul>
+									
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+							</header>
+								<ul>
+								<li><a href="index.html">Homepage</a></li>
+								<li><a href="cv.html">Curriculum Vitae</a></li>
+								<li>
+								<span class="opener">Projects</span>
+								<ul>
+								<li><a href="#">PDE Benchmark</a></li>
+								<li><a href="finn.html">Finite Volume Neural Network</a></li>
+								<li><a href="#">LSTM on water level prediction</a></li>
+								<li><a href="#">Physics-informed ANN for Thermochemical Energy Storage</a></li>
+								<li><a href="#">Multiscale modelling for fractured geothermal reservoir</a></li>
+								<li><a href="#">Juventus analytics</a></li>
+								<li><a href="#">Festo Coding Challenge</a></li>
+							</ul>
+							</li>
+								<li><a href="publications.html">Publications list</a></li>
+								<li><a href="#">Teaching and supervision</a></li>
+							</ul>
+							</nav>
+							
+							<!-- Section -->
+							<section>
+								<header class="major">
+								<h2>Get in touch</h2>
+							</header>
+								<p>Thank you for visiting my page! If you are interested and want to get in touch, please use either the phone or email link on top of this page, or use the contact form below.</p>
+								<form method="post" action="https://formspree.io/f/mzbwznao">
+								<div class="fields">
+								<div class="field half">
+								<input type="text" name="name" id="name" placeholder="Name" />
+							</div>
+								<div class="field half">
+								<input type="email" name="email" id="email" placeholder="Email" />
+							</div>
+								<div class="field">
+								<textarea name="message" id="message" placeholder="Message"></textarea>
+							</div>
+							</div>
+								<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+							</form>
+							</section>
+							
+							<!-- Footer -->
+							<footer id="footer">
+								<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+							</footer>
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
