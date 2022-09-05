@@ -1,0 +1,220 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Thermochemical Energy Storage Modeling</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Timothy Praditia</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/timothypraditia" target="_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+										<li><a href="https://scholar.google.com/citations?user=kIKsjt8AAAAJ&hl=en" target="_blank" class="icon ai ai-google-scholar-square"><span class="label">Google Scholar</span></a></li>
+										<li><a href="https://www.linkedin.com/in/timothypraditia/" target="_blank" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://www.instagram.com/timothypraditia/?hl=en" target="_blank" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="https://twitter.com/timothypraditia" target="_blank" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="https://www.facebook.com/timothypraditia" target="_blank" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="tel:+4917686418746" class="icon solid style2 fa fa-phone"><span class="label">Phone</span></a></li>
+										<li><a href="mailto: timothypraditia89@gmail.com" class="icon solid style2 fa fa-envelope"><span class="label">Email</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Thermochemical Energy Storage Modeling</h1>
+									</header>
+
+									<center>
+										<span class="image"><img src="images/batteries.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<h2 style="padding-top: 2em">The motivation</h2>
+									<p>Batteries are ubiquitous in our daily life. Most prominently, we use them to supply power to our cell phones and laptops because we do not have access to electricity 24/7, such as when we are travelling.
+										We want the batteries to last as long as possible, so that we do not have to constantly charge them.
+										Batteries are also extremely crucial in supporting the renewable energy sector.
+										Renewable energy sources are often fluctuative, for example solar power that is only available during the day, wind power that is dependent on the existence of wind, etc.
+										To meet the energy demands during those times when the renewable energy sources are not available, a reliable and long-lasting energy storage system is required.</p>
+
+									<center>
+										<span class="image"><img src="images/tces.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<p style="padding-top: 2em;">In this project, we considered a Thermochemical Energy Storage (TCES) system, shown by the sketch above.
+										The device comprises of a calcium oxide - calcium hydroxide system.
+										The charging process is performed by injecting dry air with high temperature into the device, resulting in the breakdown of calcium hydroxide into calcium oxide, releasing humid air at lower temperature.
+										In a reversible manner, the heat can be discharged by injecting humid air with low temperature to compose calcium hydroxide from the calcium oxide, releasing the heat in the reaction process.
+										The problem now, is that existing models of the TCES are computationally expensive, hindering a robust operational control of the system.
+										Consequently, this system is not yet ready for commercial and industrial applications, and a faster yet accurate model is necessary.
+										</p>
+									
+									
+									<h2>Surrogate modeling using Physics-Informed Artificial Neural Network</h2>
+									<p>We used a Nonlinear Autoregressive Network with Exogeneous Inputs (NARX) as the model of choice.
+										NARX is a type of recurrent neural network that solves a dynamic system, by taking the predicted values from earlier time steps to predict the corresponding value at the subsequent time step.
+										This leads to a feedback loop as shown in the sketch below.
+										NARX also provides a possibility to include additional inputs to the model.
+										To improve the model accuracy and to make sure that the predictions are physically consistent, we also included several physics-based regularizations in the loss function definition.
+										These additional regularizations include punishing the model if its prediction violates mass and energy conservation, if the temperature and the volume of calcium oxide are decreasing during the charging process (they should increase during charging and vice versa during discharge), etc.</p>
+
+									<center>
+										<span class="image"><img src="images/narx.jpg" alt="" style="width:65%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">Do the physics-based regularizations help?</h2>
+									
+									<p>They do! To show that, take a look at the plots of the results below.
+										For the comparison to be more evident and clear, we showed only the model predictions on a single data sample that possesses the highest error.
+										The four plots on the left show the pressure, temperature, calcium oxide volume, and water content predictions obtained using NARX (the red lines) compared to the reference (blue lines).
+										At its worst, NARX without the physics-based regularizations produces a highly erratic and erroneous predictions.
+										On the other hand, the four plots on the right show that with the help of the regularizations, NARX's worst predictions are smooth and physically consistent, even though there are considerable errors like in the pressure predictions.</p>
+
+									<center>
+										<span class="image"><img src="images/tces-results.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">Investigating the importance of model inputs</h2>
+
+									<p>There is another issue with the NARX model that we discussed so far: it requires a lot of input variables (16 in total).
+										Why is this a problem?
+										Suppose that for a single variable, we need 10 data points for proper sampling.
+										Now if we have two variables, we need a combination of 10 x 10 = 100 data points.
+										For three variables, the combination grows into 10 x 10 x 10 = 1,000 data points.
+										In short, the increase in the number of inputs leads to an exponential increase in the required number of data points to properly train the model.
+										Additionally, more input variables equals a larger model with more parameters and higher computational time.</p>
+										
+										<p>So, we investigated the importance of the model inputs using a global sensitivity analysis method, which also takes into account the dependencies and relationships between the inputs.
+										This sensitivity analysis measures the effect of a change in the input parameters on the model output.
+										If the model output is highly affected by a small change in a variable, then the corresponding variable is considered as a sensitive (important) parameter.
+										Based on the results, we were able to narrow down the important parameters to only 8 instead of 16 (the variables with high sensitivity indices in the plots below).
+										Future research can then focus on these 8 parameters, resulting in more efficient design experiments.</p>
+
+									
+									<center>
+										<span class="image"><img src="images/tces-rsa.jpg" alt="" style="width:75%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">TLDR</h2>
+
+									<p>In this project, we developed a surrogate model for the Thermochemical Energy Storage (TCES) system using a Nonlinear Autoregressive Network with Exogeneous Inputs (NARX).
+										To improve the prediction accuracy and physical plausibility, we included physics-based penalties in the loss function to regularize the model physically.
+										The addition of physics-based regularization improves the NARX prediction significantly compared to the one without.
+										We also investigated the importance of all the model inputs, and found that 8 out of the total of 16 input parameters are important, and the rest could be excluded in the model development for future works.</p>
+
+									<h2 style="padding-top: 2em;">Further reading</h2>
+
+									<b>Related papers:</b>
+									<ul>
+										<a href="https://www.mdpi.com/1996-1073/13/15/3873/htm" target="_blank">Improving Thermochemical Energy Storage Dynamics Forecast with Physics-Inspired Neural Network Architecture</a></br>
+										<a href="https://www.sciencedirect.com/science/article/abs/pii/S0306261921000222" target="_blank">Global sensitivity analysis of a CaO/Ca(OH)2 thermochemical energy storage model for parametric effect analysis</a></br>
+									</ul>
+
+									<b>Related code:</b>
+									<ul>
+										<a href="https://github.com/timothypraditia/NARX_TCES" target="_blank">NARX TCES code repository</a>
+									</ul>
+
+									<b>Related data:</b>
+									<ul>
+										<a href="https://doi.org/10.18419/darus-633" target="_blank">Input-Output Dataset for Physics-inspired Artificial Neural Network for Dynamic System</a></br>
+										<a href="https://doi.org/10.18419/darus-634" target="_blank">Trained ANN Parameters for Physics-inspired Artificial Neural Network for Dynamic System</a></br>
+									</ul>
+									
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+							</header>
+								<ul>
+									<li><a href="index.html">Homepage</a></li>
+										<li><a href="cv.html">Curriculum Vitae</a></li>
+										<li>
+											<span class="opener">Projects</span>
+											<ul>
+												<li><a href="pdebench.html">PDE Benchmark for Scientific Machine Learning</a></li>
+												<li><a href="finn.html">Finite Volume Neural Network</a></li>
+												<li><a href="lstm-water-level.html">LSTM for Water Level Prediction</a></li>
+												<li><a href="tces.html">Thermochemical Energy Storage Modeling</a></li>
+												<li><a href="msfv.html">Multiscale Modelling for Fractured Geothermal Reservoir</a></li>
+												<li><a href="#">Juventus analytics</a></li>
+												<li><a href="https://github.com/timothypraditia/festo-coding-challenge-2020" target="_blank">Festo Coding Challenge</a></li>
+											</ul>
+										</li>
+										<li><a href="publications.html">Publications list</a></li>
+										<li><a href="#">Teaching and supervision</a></li>
+								</ul>
+							</nav>
+							
+							<!-- Section -->
+							<section>
+								<header class="major">
+								<h2>Get in touch</h2>
+							</header>
+								<p>Thank you for visiting my page! If you are interested and want to get in touch, please use either the phone or email link on top of this page, or use the contact form below.</p>
+								<form method="post" action="https://formspree.io/f/mzbwznao">
+								<div class="fields">
+								<div class="field half">
+								<input type="text" name="name" id="name" placeholder="Name" />
+							</div>
+								<div class="field half">
+								<input type="email" name="email" id="email" placeholder="Email" />
+							</div>
+								<div class="field">
+								<textarea name="message" id="message" placeholder="Message"></textarea>
+							</div>
+							</div>
+								<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+							</form>
+							</section>
+							
+							<!-- Footer -->
+							<footer id="footer">
+								<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+							</footer>
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

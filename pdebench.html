@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>PDE Benchmark for Scientific Machine Learning</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Timothy Praditia</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/timothypraditia" target="_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+										<li><a href="https://scholar.google.com/citations?user=kIKsjt8AAAAJ&hl=en" target="_blank" class="icon ai ai-google-scholar-square"><span class="label">Google Scholar</span></a></li>
+										<li><a href="https://www.linkedin.com/in/timothypraditia/" target="_blank" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://www.instagram.com/timothypraditia/?hl=en" target="_blank" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="https://twitter.com/timothypraditia" target="_blank" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="https://www.facebook.com/timothypraditia" target="_blank" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="tel:+4917686418746" class="icon solid style2 fa fa-phone"><span class="label">Phone</span></a></li>
+										<li><a href="mailto: timothypraditia89@gmail.com" class="icon solid style2 fa fa-envelope"><span class="label">Email</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>PDE Benchmark for Scientific Machine Learning</h1>
+									</header>
+
+									<center>
+										<span class="image"><img src="images/pdebench.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<h2 style="padding-top: 2em">The motivation</h2>
+									<p>Machine learning predictions on image classification tasks have improved significantly during the past decade.
+										One of the most important drivers for the breakthrough in this field is the availability of popular benchmarks.
+										These benchmarks, such as MNIST, CIFAR-10, and ImageNet, facilitate a standardized way of evaluating and comparing machine learning models.
+										Such benchmarks, unfortunately, are still missing in the field of scientific machine learning to solve physical problems.
+										This project is intended to provide diverse datasets of various well-known Partial Differential Equations (PDEs), along with the codes for data generation and model training to make the benchmark easily extensible.
+										</p>
+									
+									<h2>The dataset and baseline models</h2>
+									<p>In this benchmark, we provided datasets based on various PDEs, ranging from 1 to 3 dimensions in the spatial domain.
+										The 1D datasets are generated with 1,024 grids and 10,000 samples each.
+										The 2D datasets are generated either with 512 x 512, 256 x 256, or 128 x 128 resolution, depending on the number of time steps, and the computational demand of each corresponding problem.
+										There are 1,000 samples associated with each 2D dataset.
+										The 3D dataset is generated with 128 x 128 x 128 resolution, and 100 samples are available.
+										The table below shows the overview of the datasets provided in this benchmark.
+										Regarding the baseline models, we chose U-Net and FNO that are capable of modeling spatiotemporal problems.
+										More importantly, we also included PINN as the representative of physics-informed machine learning model.
+										</p>
+
+									<center>
+										<span class="image"><img src="images/pdebench-pde.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">Baseline models comparison with the traditional PDE solver</h2>
+									
+									<center>
+										<span class="image"><img src="images/pdebench-error.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<p>The bar chart above summarizes the comparison of prediction errors between the three baseline models.
+										Among the three models, FNO produces the most accurate predictions in almost all cases.
+										Interestingly, PINN's predictions are not as accurate as FNO and U-Net, indicating that further works in the physics-informed machine learning direction are indeed necessary.
+										Another important thing to compare is the training and inference time of the baseline models.
+										Many scientific machine learning applications are focused on surrogate modeling, which demands for a faster model.
+										As shown in the table below, the training of the baseline models are computationally very demanding.
+										However, once the training is finished, all of the baseline models are faster by multiple orders of magnitude during inference, compared to the traditional PDE solvers that were used to generate the datasets.
+										</p>
+
+									<center>
+										<span class="image"><img src="images/pdebench-time.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">Temporal error behavior of the baseline models</h2>
+
+									<p>When setting up the baseline models, we observed interesting temporal behaviors.
+										When training U-Net in a fully autoregressive mode, major instabilities were observed.
+										To prevent the instability, we set up the U-Net baseline similarly to FNO: it takes multiple time steps as the initial condition.
+										In addition to that, we tested three different training modes for U-Net: 1 time step ahead, pushforward trick, and fully autoregressive.
+										The 1 time step ahead training mode allows for a very stable training, but it leads to high error accummulation with more unrolled time steps during testing.
+										The pushforward trick backpropagates the gradient information only up to several time steps, and it also improves stability during training.
+										The fully autoregressive mode backpropagates the gradient all the way to the initial input, leading to a less stable training.
+										It is also very interesting to observe from the plot below, that the pushforward trick seems to have a decreasing error with more unrolled time steps, producing predictions with the lowest error compared to the other training modes.
+										A more detailed analysis on this phenomenon could be investigated in future works, to improve model predictions on a longer prediction horizon.</p>
+									
+									<center>
+										<span class="image"><img src="images/pdebench-msetime.jpg" alt="" style="width:50%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">TLDR</h2>
+
+									<p>With this PDE benchmark, we contributed an extensive dataset collection and baseline models setup for the scientific machine learning community, covering 1 to 3 dimensional problems.
+									We provided our source codes that can be used to generate more datasets, to train the baseline models with new datasets, and even to add new baseline models to the benchmark.
+									We also provided solutions to the training stability that we encountered, and we introduced an interesting temporal behavior of the baseline model predictions as a result of implementing these solutions.
+									This behavior can be analyzed in future works to improve model performance on longer prediction horizon.
+									The scope of our benchmark is currently only limited to mostly fluid flow problems.
+									Other types of physical problems can be further included in an extension to this benchmark.
+									</p>
+
+									<h2 style="padding-top: 2em;">Further reading</h2>
+
+									<b>Related papers:</b>
+									<ul>
+										<a href="https://openreview.net/pdf?id=dh_MkX0QfrK" target="_blank">PDEBench: An Extensive Benchmark for Scientific Machine Learning</a></br>
+									</ul>
+
+									<b>Related code:</b>
+									<ul>
+										<a href="https://github.com/pdebench/PDEBench" target="_blank">PDEBench code repository</a></br>
+									</ul>
+
+									<b>Related data:</b>
+									<ul>
+										<a href="https://doi.org/10.18419/darus-2986" target="_blank">PDEBench Datasets</a></br>
+										<a href="https://doi.org/10.18419/darus-2987" target="_blank">PDEBench Pretrained Models</a></br>
+									</ul>
+									
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+							</header>
+								<ul>
+									<li><a href="index.html">Homepage</a></li>
+										<li><a href="cv.html">Curriculum Vitae</a></li>
+										<li>
+											<span class="opener">Projects</span>
+											<ul>
+												<li><a href="pdebench.html">PDE Benchmark for Scientific Machine Learning</a></li>
+												<li><a href="finn.html">Finite Volume Neural Network</a></li>
+												<li><a href="lstm-water-level.html">LSTM for Water Level Prediction</a></li>
+												<li><a href="tces.html">Thermochemical Energy Storage Modeling</a></li>
+												<li><a href="msfv.html">Multiscale Modelling for Fractured Geothermal Reservoir</a></li>
+												<li><a href="#">Juventus analytics</a></li>
+												<li><a href="https://github.com/timothypraditia/festo-coding-challenge-2020" target="_blank">Festo Coding Challenge</a></li>
+											</ul>
+										</li>
+										<li><a href="publications.html">Publications list</a></li>
+										<li><a href="#">Teaching and supervision</a></li>
+								</ul>
+							</nav>
+							
+							<!-- Section -->
+							<section>
+								<header class="major">
+								<h2>Get in touch</h2>
+							</header>
+								<p>Thank you for visiting my page! If you are interested and want to get in touch, please use either the phone or email link on top of this page, or use the contact form below.</p>
+								<form method="post" action="https://formspree.io/f/mzbwznao">
+								<div class="fields">
+								<div class="field half">
+								<input type="text" name="name" id="name" placeholder="Name" />
+							</div>
+								<div class="field half">
+								<input type="email" name="email" id="email" placeholder="Email" />
+							</div>
+								<div class="field">
+								<textarea name="message" id="message" placeholder="Message"></textarea>
+							</div>
+							</div>
+								<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+							</form>
+							</section>
+							
+							<!-- Footer -->
+							<footer id="footer">
+								<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+							</footer>
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

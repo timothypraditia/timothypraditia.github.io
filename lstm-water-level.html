@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>LSTM for Water Level Prediction</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Timothy Praditia</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/timothypraditia" target="_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+										<li><a href="https://scholar.google.com/citations?user=kIKsjt8AAAAJ&hl=en" target="_blank" class="icon ai ai-google-scholar-square"><span class="label">Google Scholar</span></a></li>
+										<li><a href="https://www.linkedin.com/in/timothypraditia/" target="_blank" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://www.instagram.com/timothypraditia/?hl=en" target="_blank" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="https://twitter.com/timothypraditia" target="_blank" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="https://www.facebook.com/timothypraditia" target="_blank" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="tel:+4917686418746" class="icon solid style2 fa fa-phone"><span class="label">Phone</span></a></li>
+										<li><a href="mailto: timothypraditia89@gmail.com" class="icon solid style2 fa fa-envelope"><span class="label">Email</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>LSTM for Water Level Prediction</h1>
+									</header>
+
+									<center>
+										<span class="image"><img src="images/lstm-water.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<h2 style="padding-top: 2em">The motivation</h2>
+									<p>Water extraction in sensitive wetlands can be damaging to the environment if not regulated well.
+										In this project, we looked at an ecologically sensitive moor in Germany (the exact location is not disclosed due to confidentiality).
+										The study area is influenced by the pumping of nearby wells for drinking water production, and therefore, an accurate model is critical to calculate the safe limit for the groundwater extraction and to preserve the moor ecologically.
+										Because this moor is connected to a complex underground aquifer, it is challenging to understand and model the system.
+										Due to the poor understanding of the modelled system, a physics-informed machine learning model can be designed to provide reliable and physically-sound predictions of the swamp water level. 
+										</p>
+									
+									<h2>The LSTM model</h2>
+									<center>
+										<span class="image"><img src="images/lstm-cell.jpg" alt="" style="width:50%;" class="center"/></span>
+									</center>
+									
+									<p style="padding-top: 2em">Because we are interested in predicting the changes in the water level for a longer time horizon, we chose a Long Short-Term Memory (LSTM) model.
+										A single LSTM cell has several gates, namely the forget gate, input gate, and output gate (see the sketch above).
+										The forget gate learns whether to keep or discard a piece of information from the previous time steps, given the new information coming into the model.
+										The input gate learns whether to add the new information to update the information from the previous time steps.
+										The output gate then calculates the value of the next hidden state.
+										Intuitively, the cell state in an LSTM serves as a memory of the model, carrying information from the past with minimum disruptions.
+										Thanks to this, LSTM also reduces the vanishing gradient effect, making it more suitable to handle data with long prediction horizon.</p>
+
+									<p>For our modeling purpose, we devised an LSTM model as shown in the sketch below.
+										As an initial condition, the swamp water level is encoded to be interpreted as an initial hidden state of the model.
+										The same LSTM cell is then repeated for each time step, with the hidden states going further through a decoder to obtain the swamp water level prediction.
+										At each time step, preprocessed inputs such as precipitation, evapotranspiration, as well as the well pumping rates are provided to the LSTM cell as additional inputs.
+										</p>
+
+									<center>
+										<span class="image"><img src="images/lstm-model.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">The results and comparison with a numerical flow model</h2>
+									
+									<center>
+										<span class="image"><img src="images/lstm-results.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<p style="padding-top: 2em;">The plots above present the swamp water level measurement (blue lines) compared with various model inputs and prediction (red lines).
+										The top left plot shows the precipitation, the top right plot shows the evapotranspiration data, the bottom left plot shows the pumping rates, and the bottom right plot shows the LSTM prediction in red.
+										We also annotated two major pumping events in the plot. 
+										The first pumping event happened during low precipitation and high evapotranspiration, leading to a huge drop in the swamp water level.
+										In contrast, the second pumping event happened during high precipitation and low evapotranspiration, leading to a relatively stable swamp water level.
+										It is very important that the model successfully captures the effect of these major pumping events in combination with the precipitation and evapotranspiration data, showing that we have a model that produces reliable predictions.
+										Additionally, we compared the LSTM prediction with a calibrated numerical flow model. As shown in the plots below, LSTM produces better predictions compared to the numerical flow model especially during the peaks, further confirming that the model is accurate.</p>
+
+									<center>
+										<span class="image"><img src="images/lstm-modflow.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">Checking physical plausibility</h2>
+
+									<p>To further ensure physical plausibility of the model predictions, we included physics-based regularizations in the loss function definition.
+										One example is to penalize the model if it predicts a lower ground water level with a lower well pumping rate.
+										A quick check of this condition is shown in the plot below.
+										By keeping all the other variables constant, we changed the pumping rate input to a lower and higher value.
+										The results show that our model adheres to this physics-based rule, by predicting a higher water level with a lower pumping rate, and vice versa.
+										Additional conditions are also included based on the precipitation and evapotranspiration data (the water level should be higher with higher precipitation, and lower with higher evapotranspiration).</p>
+									
+									<center>
+										<span class="image"><img src="images/lstm-physics.jpg" alt="" style="width:75%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">TLDR</h2>
+
+									<p>In this project, we designed an LSTM model to predict the swamp water level in a sensitive environment.
+										The LSTM model is suitable for the long prediction horizon, and is able to capture combined effects of various input variables, such as well pumping rate, precipitation, and evapotranspiration.
+										As additional constraints, we included physics-based regularizations in the model, so that the predictions are physically consistent and plausible.
+										So far, the model received precipitation and evapotranspiration data that were already measured in the past.
+										For prediction purpose, however, these measurement data are not yet available, and we have to rely on another predictions of these variables.
+										For future works, it would be interesting to check if the model performance is severely compromised when we use predicted data provided by the German Weather Service (DWD), instead of past measurement values.
+										</p>
+
+									<h2 style="padding-top: 2em;">Further reading</h2>
+
+									<b>Related slides:</b>
+									<ul>
+										<a href="https://presentations.copernicus.org/EGU21/EGU21-3013_presentation.pdf" target="_blank">Prognosis of water levels in a moor groundwater system influenced by hydrology and water extraction using an artificial neural network</a></br>	
+									</ul>
+
+									<b>Related code:</b>
+									<ul>
+										<a href="https://github.com/timothypraditia/lstm_swl" target="_blank">LSTM for SWL prediction code repository</a></br>
+									</ul>
+									
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+							</header>
+								<ul>
+									<li><a href="index.html">Homepage</a></li>
+										<li><a href="cv.html">Curriculum Vitae</a></li>
+										<li>
+											<span class="opener">Projects</span>
+											<ul>
+												<li><a href="pdebench.html">PDE Benchmark for Scientific Machine Learning</a></li>
+												<li><a href="finn.html">Finite Volume Neural Network</a></li>
+												<li><a href="lstm-water-level.html">LSTM for Water Level Prediction</a></li>
+												<li><a href="tces.html">Thermochemical Energy Storage Modeling</a></li>
+												<li><a href="msfv.html">Multiscale Modelling for Fractured Geothermal Reservoir</a></li>
+												<li><a href="#">Juventus analytics</a></li>
+												<li><a href="https://github.com/timothypraditia/festo-coding-challenge-2020" target="_blank">Festo Coding Challenge</a></li>
+											</ul>
+										</li>
+										<li><a href="publications.html">Publications list</a></li>
+										<li><a href="#">Teaching and supervision</a></li>
+								</ul>
+							</nav>
+							
+							<!-- Section -->
+							<section>
+								<header class="major">
+								<h2>Get in touch</h2>
+							</header>
+								<p>Thank you for visiting my page! If you are interested and want to get in touch, please use either the phone or email link on top of this page, or use the contact form below.</p>
+								<form method="post" action="https://formspree.io/f/mzbwznao">
+								<div class="fields">
+								<div class="field half">
+								<input type="text" name="name" id="name" placeholder="Name" />
+							</div>
+								<div class="field half">
+								<input type="email" name="email" id="email" placeholder="Email" />
+							</div>
+								<div class="field">
+								<textarea name="message" id="message" placeholder="Message"></textarea>
+							</div>
+							</div>
+								<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+							</form>
+							</section>
+							
+							<!-- Footer -->
+							<footer id="footer">
+								<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+							</footer>
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

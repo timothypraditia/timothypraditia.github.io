@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Multiscale Modeling for Fractured Geothermal Reservoir</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Timothy Praditia</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/timothypraditia" target="_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+										<li><a href="https://scholar.google.com/citations?user=kIKsjt8AAAAJ&hl=en" target="_blank" class="icon ai ai-google-scholar-square"><span class="label">Google Scholar</span></a></li>
+										<li><a href="https://www.linkedin.com/in/timothypraditia/" target="_blank" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://www.instagram.com/timothypraditia/?hl=en" target="_blank" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="https://twitter.com/timothypraditia" target="_blank" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="https://www.facebook.com/timothypraditia" target="_blank" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="tel:+4917686418746" class="icon solid style2 fa fa-phone"><span class="label">Phone</span></a></li>
+										<li><a href="mailto: timothypraditia89@gmail.com" class="icon solid style2 fa fa-envelope"><span class="label">Email</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Multiscale Modeling for Fractured Geothermal Reservoir</h1>
+									</header>
+
+									<center>
+										<span class="image"><img src="images/geothermal.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<h2 style="padding-top: 2em">The motivation</h2>
+									<p>An ideal geothermal reservoir needs three main factors: heat, fluid (water and/or steam) that transfers the heat, and permeability (hydraulic conductivity) that enables the fluid to flow to the production wells.
+										To increase the heat production rate, it is therefore desired to exploit the fractures inside the reservoir, which are basically freeways for the fluid flow.
+										However, the presence of fractures also comes with a caveat in the modeling process.
+										Normally, the fractures inside the reservoir form a complex network which leads to a very heterogeneous system.
+										Complex heterogeneous system needs a high resolution (read: expensive and computationally demanding) model for the prediction to be accurate.
+										So the question is: can we build a model with low resolution but still accurate enough for fracture modeling purposes?</p>
+									
+									<h2>The multiscale method, a.k.a. the switch between coarse and fine scale</h2>
+
+									<center>
+										<span class="image"><img src="images/ms-grid.jpg" alt="" style="width:65%;" class="center"/></span>
+									</center>
+
+									<p style="padding-top: 2em;">The short answer is: yes we can!
+										First, the coarse representation of the reservoir is generated. In the sketch above, we have a reservoir that is represented by 45 x 45 fine grids. To simplify the model, we constructed coarse grids that contain 15 x 15 fine grids.
+										As a result, instead of solving a 45 x 45 system (2,025 x 2,025 matrix), we only need to solve a coarse 3 x 3 system (9 x 9 matrix), which is a lot faster.
+										Now comes the beauty of this method: after solving the system in coarse scale, the solutions can be reconstructed back into fine scale without losing too much accuracy!</p>
+
+									<p>As also shown in the sketch, two types of coarse grids are required: primal and dual. Each primal grid contains a single vertex that represents the volume average of all the 15 x 15 fine grids contained within it.
+										The dual grid, on the other hand, is bounded by four vertices and it overlaps with the primal grids.
+										The purpose of the dual coarse grids is to facilitate calculations of the connectivity between one primal grid and the others.
+										To encode the fine scale details, basis functions are solved within the dual coarse grids.
+										These basis functions are the most important element of the multiscale method, because they serve as the interpolators to switch back and forth between the coarse and fine scale solutions.</p>
+
+									<h2>Coupling with the fractures</h2>
+
+									<center>
+										<span class="image"><img src="images/ms-decoupled.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<p>The basis functions are solved both on the matrix (the regular square grids in the sketch), and on the fractures (the thinner rectangular grids in the sketch).
+										In this project, we considered two coupling approaches to solve the basis functions: the decoupled and semi-coupled approach.
+										The decoupled approach assumes complete independence between the matrix and fracture domain, meaning that the basis functions in the matrix are not influenced by the presence of fractures, and vice versa (see the figures above).
+										In the semi-coupled approach, basis functions are first solved inside the fracture domain without any influence from the matrix.
+										Then, the basis functions inside the matrix are solved, taking into account the influence from the fracture basis functions (see the figures below).
+										</p>
+
+									<center>
+										<span class="image"><img src="images/ms-semicoupled.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">The results</h2>
+
+									<p></p>
+									
+									<center>
+										<span class="image"><img src="images/ms-temperature.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<p style="padding-top: 2em;">Now let's consider a simple homogeneous reservoir with only a single fracture.
+										Cold water is injected from the bottom left corner (red circle at x = 0, y = 0) and water flows out through the production well (blue circle at x = 100, y = 100).
+										The left plot above shows the fine scale temperature solution as reference, solved with 99 x 99 grids.
+										The middle plot shows the multiscale temperature solution obtained using the decoupled strategy, and the rightmost plot shows the multiscale solution obtained with the semi-coupled approach.
+										The multiscale solutions are solved only with 9 x 9 coarse grids (denoted by the white lines in the plot).
+										Higher errors can be observed on the multiscale solution obtained using the decoupled approach, especially in the areas surrounding the fracture.
+										This is expected, because the decoupled strategy ignores the matrix-fracture connection completely.
+										However, with an additional smoothing stage using an ILU factorization, the multiscale solution errors are significantly reduced, as shown in the plots below.</p>
+
+									<center>
+										<span class="image"><img src="images/ms-temperatureconv.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">How does the method perform on a more complex fracture network?</h2>
+
+									<p>To answer this question, we considered a very dense fracture network, modeled based on an outcrop in Brazil.
+										To add another layer of complexity to the modeling task, the hydraulic and heat conductivity of the reservoir are treated as heterogeneous.
+										For this model, we implemented the decoupled multiscale approach for maximum computational efficiency.
+										The results are shown in the plots below, with the relative error on the rightmost plot, showing reasonable accuracy of the multiscale approach, with notable errors only in small areas that are not very relevant to the fluid flow path.</p>
+									
+									<center>
+										<span class="image"><img src="images/ms-outcrop.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+
+									<h2 style="padding-top: 2em;">TLDR</h2>
+
+									<p>In this project, we introduced a multiscale modeling approach to solve both pressure and temperature in fractured geothermal reservoirs.
+										With the multiscale method, a model can be solved more efficiently on a coarse scale without compromising the fine scale details.
+										More interestingly, the coarse scale solution can be interpolated to reconstruct the fine scale solution with high accuracy using the basis functions.
+										We successfully applied this method on a complex fracture network model, based on real geological outcrop data.
+										Further developments of the model could include a multiphase flow inside the reservoir and geomechanical effects (such as fracture activation, closure, and propagation).
+										</p>
+
+									<h2 style="padding-top: 2em;">Further reading</h2>
+
+									<b>Related paper:</b>
+									<ul>
+										<a href="https://link.springer.com/content/pdf/10.1007/s10596-018-9754-4.pdf" target="_blank">Multiscale formulation for coupled flow-heat equations arising from single-phase flow in fractured geothermal reservoirs</a></br>
+									</ul>
+									
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+							</header>
+								<ul>
+									<li><a href="index.html">Homepage</a></li>
+										<li><a href="cv.html">Curriculum Vitae</a></li>
+										<li>
+											<span class="opener">Projects</span>
+											<ul>
+												<li><a href="pdebench.html">PDE Benchmark for Scientific Machine Learning</a></li>
+												<li><a href="finn.html">Finite Volume Neural Network</a></li>
+												<li><a href="lstm-water-level.html">LSTM for Water Level Prediction</a></li>
+												<li><a href="tces.html">Thermochemical Energy Storage Modeling</a></li>
+												<li><a href="msfv.html">Multiscale Modelling for Fractured Geothermal Reservoir</a></li>
+												<li><a href="#">Juventus analytics</a></li>
+												<li><a href="https://github.com/timothypraditia/festo-coding-challenge-2020" target="_blank">Festo Coding Challenge</a></li>
+											</ul>
+										</li>
+										<li><a href="publications.html">Publications list</a></li>
+										<li><a href="#">Teaching and supervision</a></li>
+								</ul>
+							</nav>
+							
+							<!-- Section -->
+							<section>
+								<header class="major">
+								<h2>Get in touch</h2>
+							</header>
+								<p>Thank you for visiting my page! If you are interested and want to get in touch, please use either the phone or email link on top of this page, or use the contact form below.</p>
+								<form method="post" action="https://formspree.io/f/mzbwznao">
+								<div class="fields">
+								<div class="field half">
+								<input type="text" name="name" id="name" placeholder="Name" />
+							</div>
+								<div class="field half">
+								<input type="email" name="email" id="email" placeholder="Email" />
+							</div>
+								<div class="field">
+								<textarea name="message" id="message" placeholder="Message"></textarea>
+							</div>
+							</div>
+								<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+							</form>
+							</section>
+							
+							<!-- Footer -->
+							<footer id="footer">
+								<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+							</footer>
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
