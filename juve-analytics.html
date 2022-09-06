@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Juventus Analytics</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Timothy Praditia</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/timothypraditia" target="_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+										<li><a href="https://scholar.google.com/citations?user=kIKsjt8AAAAJ&hl=en" target="_blank" class="icon ai ai-google-scholar-square"><span class="label">Google Scholar</span></a></li>
+										<li><a href="https://www.linkedin.com/in/timothypraditia/" target="_blank" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://www.instagram.com/timothypraditia/?hl=en" target="_blank" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="https://twitter.com/timothypraditia" target="_blank" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="https://www.facebook.com/timothypraditia" target="_blank" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="tel:+4917686418746" class="icon solid style2 fa fa-phone"><span class="label">Phone</span></a></li>
+										<li><a href="mailto: timothypraditia89@gmail.com" class="icon solid style2 fa fa-envelope"><span class="label">Email</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Juventus Analytics</h1>
+									</header>
+
+									<center>
+										<span class="image"><img src="images/football.jpg" alt="" style="width:100%;" class="center"/></span>
+									</center>
+									
+									<h2 style="padding-top: 2em">The motivation</h2>
+									<div class="row">
+										<div class="col-8">
+											<p>I have been a big fan of Juventus ever since Gianluigi Buffon was transferred from Parma in summer 2001 (there's a bonus picture of me in front of the stadium).
+												As an avid supporter, I am also quite active in the <a href="https://www.reddit.com/r/Juve/" target="_blank">r/Juve subreddit</a> to discuss and keep up to date with the lastest news.
+												Unfortunately, social media could also be a toxic environment for discussions, especially with the significant drop in the team's performance after dominating the Italian league for nine consecutive years, angering a lot of fans.
+												At the end of 2021, some fellow Redditors and I started a mini project of data analytics specifically for all things Juventus.
+												We hoped that with the backing of data, we could start civilized and respectful discussions in the subreddit.
+												Additionally, it would be fun to check if popular opinions in the subreddit are indeed justifiable.</p>
+										</div>
+										<div class="col-4">
+											<img src="images/juve-stadium.jpg" alt="" style="width:100%;" class="center"/>
+										</div>
+									</div>
+									
+									
+									
+									
+									<h2 style="padding-top: 2em">Midfielders goal contribution</h2>
+									<p>Midfielders used to be Juventus' strongest area in the early 2010s, with the likes of Andrea Pirlo, Paul Pogba, Claudio Marchisio, and Arturo Vidal dictating the play.
+										Since they left, Juventus have been struggling to find adequate replacements and as a result, look very impotent in the offensive phase.
+										However, one can also ask: are the criticisms really justifiable? Or are the opinions biased just because Juventus do not have superstar midfielders now?</p>
+									<p>To check this, we first looked at the goals contribution from midfielders over the year, compared to the other positions.
+										In the left plot below, we compared the goals scored by our midfielders with the other positions.
+										By the time this plot was created, the 2021/2022 season was not finished yet, and therefore there is a drop in the goals contribution at the end of the plot.
+										The different background colors indicate different managers that were in charge of the team at that time.
+										Obviously, the goals mostly came from the forwards, and Juventus received a boost in forward goals since the arrival of Ronaldo in 2018.
+										However, it is unfortunate to see that the goals contributed by our midfielders have significantly declined and even became similar to the number of goals scored by the defenders (full-backs included).</p>
+									<p>Next, we compared the expected goals (xG) vs the actual goals scored by our midfielders in season 2017-2018 (the first season where xG data is available in fbref.com), vs the 2020/2021 season.
+										The plot on the right shows that Juventus' midfielders seem to be less effective in scoring chances if we see the linear trend in the plot (recently there were less actual goals scored compared to the expected goals).
+										In short, it is apparently not only a subjective opinion, that the midfielders recently underperformed compared to the beginning of the 2010s.</p>
+
+									<div class="row">
+										<div class="col-8">
+											<img src="images/juve-mfgoals.jpg" style="width:100%">
+										</div>
+										<div class="col-4">
+											<img src="images/juve-mfxg.jpg" alt="" style="width:100%;" class="center"/>
+										</div>
+									</div>
+
+									<h2 style="padding-top: 2em;">We know now that the midfielders truly underperformed. But what about the team as a whole?</h2>
+									
+									<p>This question was difficult to quantify in the beginning, but then I figured out an interesting data source to exploit.
+										I decided to use betting odds data of past matches, starting from the season 2007/2008 when Juventus were promoted once more to Serie A.
+										I thought that the betting odds are a good representation of the expectation of the team's performance, since the bookies want the odds to resemble the actual results as close as possible so that they earn money.
+										To process the data, the betting odds were first normalized into probability values of winning, drawing, or losing.
+										They were then multiplied with the points obtained for each case (win = 3, draw = 1, and loss = 0), resulting in an expected point.
+										</p>
+
+									<p>The first plot on the left shows the density distribution of Juventus' points at the end of the season compared to the expected points.
+										The orange density plot shows more concentration on higher points, indicating that Juventus actually overperformed against the bookies' expectations.
+										The second plot on the right shows the evolution of the total points for each season in comparison to the aforementioned expected points.
+										It is clear that when Juventus were still recovering from the relegation in 2007, the bookies did not put too much expectation, shown by the lower expected points.
+										Juventus actually underperformed significantly then, during Ranieri's and Zaccheroni's era (it was a dark era to forget for all the fans).
+										The turning point could be seen in the 2011/2012 season, where Conte led the team to superior overperformance, especially the 100 points Scudetto.
+										The only time that Juventus started to underperform again was during the 2020/2021 season, but also by a very small margin.</p>
+
+									<div class="row">
+										<div class="col-6">
+											<img src="images/juve-perfdist.jpg" style="width:100%">
+										</div>
+										<div class="col-6">
+											<img src="images/juve-xpoints.jpg" alt="" style="width:100%;" class="center"/>
+										</div>
+									</div>
+
+									<h2 style="padding-top: 2em;">TLDR</h2>
+
+									<p>This is a fun personal project that was initiated by some fellow Redditors and me, with the goal to initiate meaningful and logical discussion based on evidences, and ultimately to have a respectful environment to discuss at least in the subreddit.
+										The project is also relatively new, so we have not explored a lot of topics so far.
+										In the examples I show here, we were able to justify the popular general opinion that is a recurring theme in the subreddit: underperformance of the midfielders.
+										Only by collecting data from past seasons and plotting the trend, we showed that the midfielders indeed underperformed in recent seasons.
+										However, the team as a whole did not underperform against expectations, but the trend displays that the team is on the way towards underperformance.</p>
+
+									<h2 style="padding-top: 2em;">Further reading</h2>
+
+									<b>Related Reddit posts:</b>
+									<ul>
+										<a href="https://www.reddit.com/r/Juve/comments/rbuakh/fananalytics_midfielder_goals_20112012_now/" target="_blank">[Fan-Analytics] Midfielder goals 2011/2012 - now</a></br>
+										<a href="https://www.reddit.com/r/Juve/comments/t51hod/fananalytics_are_we_overperforming_or/" target="_blank">[Fan-Analytics] Are we overperforming or underperforming? A short comparison based on betting odds</a>					
+									</ul>
+
+									<b>Related code:</b>
+									<ul>
+										<a href="https://github.com/timothypraditia/juve-analytics" target="_blank">Juventus analytics code repository</a></br>
+									</ul>
+									
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+							</header>
+								<ul>
+									<li><a href="index.html">Homepage</a></li>
+										<li><a href="cv.html">Curriculum Vitae</a></li>
+										<li>
+											<span class="opener">Projects</span>
+											<ul>
+												<li><a href="pdebench.html">PDE Benchmark for Scientific Machine Learning</a></li>
+												<li><a href="finn.html">Finite Volume Neural Network</a></li>
+												<li><a href="lstm-water-level.html">LSTM for Water Level Prediction</a></li>
+												<li><a href="tces.html">Thermochemical Energy Storage Modeling</a></li>
+												<li><a href="msfv.html">Multiscale Modelling for Fractured Geothermal Reservoir</a></li>
+												<li><a href="juve-analytics.html">Juventus analytics</a></li>
+												<li><a href="https://github.com/timothypraditia/festo-coding-challenge-2020" target="_blank">Festo Coding Challenge</a></li>
+											</ul>
+										</li>
+										<li><a href="publications.html">Publications list</a></li>
+										<li><a href="teaching.html">Teaching and supervision</a></li>
+									</ul>
+							</nav>
+							
+							<!-- Section -->
+							<section>
+								<header class="major">
+								<h2>Get in touch</h2>
+							</header>
+								<p>Thank you for visiting my page! If you are interested and want to get in touch, please use either the phone or email link on top of this page, or use the contact form below.</p>
+								<form method="post" action="https://formspree.io/f/mzbwznao">
+								<div class="fields">
+								<div class="field half">
+								<input type="text" name="name" id="name" placeholder="Name" />
+							</div>
+								<div class="field half">
+								<input type="email" name="email" id="email" placeholder="Email" />
+							</div>
+								<div class="field">
+								<textarea name="message" id="message" placeholder="Message"></textarea>
+							</div>
+							</div>
+								<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+							</form>
+							</section>
+							
+							<!-- Footer -->
+							<footer id="footer">
+								<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+							</footer>
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
